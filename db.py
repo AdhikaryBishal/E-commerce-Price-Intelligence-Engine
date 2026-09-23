@@ -1,8 +1,14 @@
-import psycopg2  # type: ignore[import-not-found]
+import psycopg2
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # ← must be called BEFORE os.getenv
 
 def get_conn():
-    return psycopg2.connect(os.getenv("DATABASE_URL"))
+    url = os.getenv("DATABASE_URL")
+    if not url:
+        raise Exception("DATABASE_URL is not set. Check your .env file.")
+    return psycopg2.connect(url)
 
 def create_table():
     conn = get_conn()
